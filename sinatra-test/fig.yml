@@ -1,0 +1,4 @@
+app:
+  image: seiji/sinatra-test
+  ports:
+    - "4567:4567"

@@ -1,0 +1,17 @@
+[Unit]
+Description=nginx
+
+Requires=etcd.service
+Requires=docker.service
+
+After=etcd.service
+After=docker.service
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStartPre=/usr/bin/docker pull seiji/nginx
+ExecStart=/usr/bin/docker run --name nginx-%i --rm -p %i:80 seiji/nginx
+ExecStop=/usr/bin/docker kill nginx-%i
+
+[X-Fleet]
+X-Conflicts=nginx@%i.service

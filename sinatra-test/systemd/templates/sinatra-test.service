@@ -1,0 +1,15 @@
+[Unit]
+Description=sinatra-test
+
+[Service]
+EnvironmentFile=/etc/environment
+TimeoutStartSec=900s
+ExecStartPre=/usr/bin/docker pull seiji/sinatra-test
+ExecStart=/usr/bin/docker run --name sinatra-test-%i --rm -p %i:4567 seiji/sinatra-test
+ExecStartPost=/usr/bin/etcdctl set /app/server/%i ${COREOS_PRIVATE_IPV4}:%i
+ExecStop=/usr/bin/docker kill sinatra-test-%i
+ExecStopPost=/usr/bin/etcdctl rm /app/server/%i
+
+[X-Fleet]
+X-Conflicts=sinatra-test@%i.service
+
